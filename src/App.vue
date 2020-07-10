@@ -30,7 +30,7 @@
         <v-row
           v-scroll="infiniteLoad"
         >
-          <v-col cols="3" v-for="(gif, index) in gifs.data" :key="index">
+          <v-col cols="3" v-for="(gif, index) in gifs.data" :key="gif.id + index">
             <v-card>
               <v-img
                 :src="gif.images.downsized.url"
