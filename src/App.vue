@@ -29,7 +29,6 @@
       <v-container>
         <v-row
           v-scroll="infiniteLoad"
-          id="infinity-scroll"
         >
           <v-col cols="3" v-for="(gif, index) in gifs.data" :key="index">
             <v-card>
@@ -125,8 +124,8 @@ export default {
       if (this.query.trim()) {
         const query = this.query.trim()
 
-        if (this.gifs.type !== 'search' || this.gifs.query !== query) {
-          this.gifs.type = 'search'
+        if (this.gifs.source !== 'search' || this.gifs.query !== query) {
+          this.gifs.source = 'search'
           this.gifs.query = query
           this.gifs.offset = 0
           this.gifs.data = []
@@ -134,8 +133,8 @@ export default {
 
         this.addDesiredGifs(query, number)
       } else {
-        if (this.gifs.type !== 'random') {
-          this.gifs.type = 'random'
+        if (this.gifs.source !== 'random') {
+          this.gifs.source = 'random'
           this.gifs.query = ''
           this.gifs.offset = 0
           this.gifs.data = []
