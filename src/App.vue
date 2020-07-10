@@ -59,14 +59,99 @@
 <script>
 
 export default {
-  name: 'App',
+  data: () => ({
+    gifs: {
+      source: 'random',
+      query: '',
+      offset: 0,
+      data: []
+    },
+    API_KEY: 'vKAKk37t5bqwLBVFsyEZwWWOkDxnoDdC',
+    query: ''
+  }),
 
-  components: {
-    HelloWorld
+  mounted () {
+    this.addGifs(20)
   },
 
-  data: () => ({
-    //
-  })
+  methods: {
+    async getRandomGif (apiKey, tag = '') {
+      try {
+        const url = `https://api.giphy.com/v1/gifs/random?api_key=${apiKey}&tag=${tag}`
+        const response = await fetch(url)
+        const result = await response.json()
+        return result.data
+      } catch (err) {
+        console.error(err)
+      }
+    },
+
+    async getDesiredGifs (apiKey, query, limit = 20, offset = 0) {
+      try {
+        const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${query}&limit=${limit}&offset=${offset}`
+        const response = await fetch(url)
+        const result = await response.json()
+        return result.data
+      } catch (err) {
+        console.error(err)
+      }
+    },
+
+    addRandomGifs (number) {
+      const gifs = []
+
+      for (let i = 0; i < number; i++) {
+        gifs.push(this.getRandomGif(this.API_KEY))
+      }
+
+      Promise.all(gifs)
+        .then(res => this.gifs.data.push(...res))
+        .catch(err => console.error(err))
+    },
+
+    async addDesiredGifs (query, limit) {
+      const gifs = await this.getDesiredGifs(this.API_KEY, query, limit, this.gifs.offset)
+
+      if (gifs.length > 0) {
+        this.gifs.data.push(...gifs)
+        this.gifs.offset += limit
+      } else {
+        const notFoundGif = await this.getDesiredGifs(this.API_KEY, 'Not Found', 1, Math.floor(Math.random() * 100))
+        this.gifs.data.push(...notFoundGif)
+      }
+    },
+
+    addGifs (number) {
+      if (this.query.trim()) {
+        const query = this.query.trim()
+
+        if (this.gifs.type !== 'search' || this.gifs.query !== query) {
+          this.gifs.type = 'search'
+          this.gifs.query = query
+          this.gifs.offset = 0
+          this.gifs.data = []
+        }
+
+        this.addDesiredGifs(query, number)
+      } else {
+        if (this.gifs.type !== 'random') {
+          this.gifs.type = 'random'
+          this.gifs.query = ''
+          this.gifs.offset = 0
+          this.gifs.data = []
+        }
+
+        this.addRandomGifs(number)
+      }
+    },
+
+    infiniteLoad (event) {
+      const target = event.target
+      const isEndScroll = target.scrollingElement.scrollHeight - target.scrollingElement.scrollTop <= target.scrollingElement.clientHeight
+      if (isEndScroll) {
+        this.addGifs(20)
+      }
+    }
+  }
 }
 </script>
