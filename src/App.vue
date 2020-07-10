@@ -27,8 +27,11 @@
 
     <v-main>
       <v-container>
-        <v-row
+        <v-fade-transition
+          group
+          class="row"
           v-scroll="infiniteLoad"
+          tag="div"
         >
           <v-col cols="3" v-for="(gif, index) in gifs.data" :key="gif.id + index">
             <v-card>
@@ -49,7 +52,7 @@
               </v-img>
             </v-card>
           </v-col>
-        </v-row>
+        </v-fade-transition>
       </v-container>
     </v-main>
   </v-app>
