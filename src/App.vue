@@ -13,7 +13,7 @@
           <v-col cols="9">
             <v-text-field
               v-model="query"
-              @input="addGifs(20)"
+              @input="search(20)"
               :placeholder="'Search'"
               :outlined="true"
               :color="'blue'"
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import debounce from './debounce'
 
 export default {
   data: () => ({
@@ -153,7 +154,12 @@ export default {
       if (isEndScroll) {
         this.addGifs(20)
       }
-    }
+    },
+
+    search: debounce(function (number) {
+      this.gifs.data.length = 0
+      this.addGifs(number)
+    }, 500)
   }
 }
 </script>
