@@ -116,16 +116,22 @@ export default {
       }
     },
 
-    addRandomGifs (number) {
+    async addRandomGifs (number) {
+      this.loading = true
       const gifs = []
 
       for (let i = 0; i < number; i++) {
         gifs.push(this.getRandomGif(this.API_KEY))
       }
 
-      Promise.all(gifs)
-        .then(res => this.gifs.data.push(...res))
-        .catch(err => console.error(err))
+      try {
+        const res = await Promise.all(gifs)
+        this.gifs.data.push(...res)
+      } catch (err) {
+        console.error(err)
+      }
+
+      this.loading = false
     },
 
     async addDesiredGifs (query, limit) {
