@@ -50,6 +50,16 @@
                   </v-row>
                 </template>
               </v-img>
+              <v-card-actions v-if="webShareApiSupported">
+                <v-spacer></v-spacer>
+                <v-btn
+                  icon
+                  color="blue"
+                  @click="share(gif.url, gif.title)"
+                >
+                  <v-icon>mdi-share-variant</v-icon>
+                </v-btn>
+              </v-card-actions>
             </v-card>
           </v-col>
         </v-fade-transition>
@@ -75,6 +85,12 @@ export default {
 
   mounted () {
     this.addGifs(20)
+  },
+
+  computed: {
+    webShareApiSupported () {
+      return navigator.share
+    }
   },
 
   methods: {
@@ -159,7 +175,14 @@ export default {
     search: debounce(function (number) {
       this.gifs.data.length = 0
       this.addGifs(number)
-    }, 500)
+    }, 500),
+
+    share (url, text) {
+      navigator.share({
+        text,
+        url
+      })
+    }
   }
 }
 </script>
