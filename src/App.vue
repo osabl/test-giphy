@@ -115,8 +115,8 @@ export default {
       const gifs = await this.getDesiredGifs(this.API_KEY, query, limit, this.gifs.offset)
 
       if (gifs.length > 0) {
-        this.gifs.data.push(...gifs)
         this.gifs.offset += limit
+        this.gifs.data.push(...gifs)
       } else {
         const notFoundGif = await this.getDesiredGifs(this.API_KEY, 'Not Found', 1, Math.floor(Math.random() * 100))
         this.gifs.data.push(...notFoundGif)
@@ -131,7 +131,7 @@ export default {
           this.gifs.source = 'search'
           this.gifs.query = query
           this.gifs.offset = 0
-          this.gifs.data = []
+          this.gifs.data.length = 0
         }
 
         this.addDesiredGifs(query, number)
@@ -140,7 +140,7 @@ export default {
           this.gifs.source = 'random'
           this.gifs.query = ''
           this.gifs.offset = 0
-          this.gifs.data = []
+          this.gifs.data.length = 0
         }
 
         this.addRandomGifs(number)
