@@ -63,6 +63,19 @@
             </v-card>
           </v-col>
         </v-fade-transition>
+        <v-row
+          class="mt-3"
+          v-show="loading"
+          align="center"
+          justify="center"
+        >
+          <v-progress-circular
+            :size="80"
+            :width="8"
+            color="blue"
+            indeterminate
+          ></v-progress-circular>
+        </v-row>
       </v-container>
     </v-main>
   </v-app>
@@ -80,7 +93,8 @@ export default {
       data: []
     },
     API_KEY: 'vKAKk37t5bqwLBVFsyEZwWWOkDxnoDdC',
-    query: ''
+    query: '',
+    loading: false
   }),
 
   mounted () {
@@ -135,6 +149,7 @@ export default {
     },
 
     async addDesiredGifs (query, limit) {
+      this.loading = true
       const gifs = await this.getDesiredGifs(this.API_KEY, query, limit, this.gifs.offset)
 
       if (gifs.length > 0) {
@@ -144,6 +159,8 @@ export default {
         const notFoundGif = await this.getDesiredGifs(this.API_KEY, 'Not Found', 1, Math.floor(Math.random() * 100))
         this.gifs.data.push(...notFoundGif)
       }
+
+      this.loading = false
     },
 
     addGifs (number) {
