@@ -3,7 +3,7 @@
     <header>
       <v-container>
         <v-row class="center">
-          <v-col>
+          <v-col cols="3">
             <v-img
               :src="require('@/assets/logo.svg')"
               contain
@@ -33,7 +33,7 @@
           v-scroll="infiniteLoad"
           tag="div"
         >
-          <v-col cols="3" v-for="(gif, index) in gifs.data" :key="gif.id + index">
+          <v-col cols="6" sm="4" md="3" v-for="(gif, index) in gifs.data" :key="gif.id + index">
             <v-card>
               <v-img
                 :src="gif.images.downsized.url"
