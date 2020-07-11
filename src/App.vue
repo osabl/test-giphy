@@ -30,7 +30,6 @@
         <v-fade-transition
           group
           class="row"
-          v-scroll="infiniteLoad"
           tag="div"
         >
           <v-col cols="6" sm="4" md="3" v-for="(gif, index) in gifs.data" :key="gif.id + index">
@@ -65,11 +64,12 @@
         </v-fade-transition>
         <v-row
           class="mt-3"
-          v-show="loading"
           align="center"
           justify="center"
+          ref="observer"
         >
           <v-progress-circular
+            v-show="loading"
             :size="80"
             :width="8"
             color="blue"
@@ -82,9 +82,11 @@
 </template>
 
 <script>
-import debounce from './debounce'
+import debounce from '@/debounce'
 
 export default {
+  name: 'app',
+
   data: () => ({
     gifs: {
       source: 'random',
@@ -98,7 +100,16 @@ export default {
   }),
 
   mounted () {
-    this.addGifs(20)
+    // Create observer for infinite scrolling
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.intersectionRatio > 0) {
+          this.addGifs(20)
+        }
+      }
+    })
+
+    observer.observe(this.$refs.observer)
   },
 
   computed: {
@@ -184,14 +195,6 @@ export default {
         }
 
         this.addRandomGifs(number)
-      }
-    },
-
-    infiniteLoad (event) {
-      const target = event.target
-      const isEndScroll = target.scrollingElement.scrollHeight - target.scrollingElement.scrollTop <= target.scrollingElement.clientHeight
-      if (isEndScroll) {
-        this.addGifs(20)
       }
     },
 
